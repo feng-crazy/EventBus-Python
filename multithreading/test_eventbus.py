@@ -10,71 +10,71 @@ import time
 
 from eventbus.EventBus import EventBus
 from eventbus.MThread import MThread
-from eventbus.MsgTarget import MsgTarget
+from eventbus.EventTarget import EventTarget
 
 
-class TestMsgTarget1(MsgTarget):
+class TestEventTarget1(EventTarget):
     """
-    test MsgTarget
+    test EventTarget
     """
     def __init__(self):
-        super(TestMsgTarget1, self).__init__(self)
+        super(TestEventTarget1, self).__init__(self)
         self.subscribe('TestThread2', self)
-        self.subscribe('TestMsgTarget2', self)
+        self.subscribe('TestEventTarget2', self)
         
     def event_handle(self, event, event_content):
         """
-        事件处理函数，该函数可以理解为纯虚函数，MsgTarget子类必须要实现
+        事件处理函数，该函数可以理解为纯虚函数，EventTarget子类必须要实现
         """
-        print('TestMsgTarget1 ', 'event_handle', event, event_content)
+        print('TestEventTarget1 ', 'event_handle', event, event_content)
 
     def exec(self):
         """
             publish_event
         """
-        event = 'TestMsgTarget1'
-        event_content = str(time.time())
+        event = 'TestEventTarget1'
+        event_content = (str(time.time())).encode()
         print('publish_event:', event, event_content)
         self.publish_event(event, event_content)
         
     def __del__(self):
         self.unsubscribe('TestThread2', self)
-        self.unsubscribe('TestMsgTarget2', self)
-        super(TestMsgTarget1, self).__del__()
+        self.unsubscribe('TestEventTarget2', self)
+        super(TestEventTarget1, self).__del__()
 
 
-class TestMsgTarget2(MsgTarget):
+class TestEventTarget2(EventTarget):
     """
-    test MsgTarget
+    test EventTarget
     """
 
     def __init__(self):
-        super(TestMsgTarget2, self).__init__(self)
+        super(TestEventTarget2, self).__init__(self)
         self.subscribe('TestThread1', self)
-        self.subscribe('TestMsgTarget1', self)
+        self.subscribe('TestEventTarget1', self)
 
     def event_handle(self, event, event_content):
         """
-        事件处理函数，该函数可以理解为纯虚函数，MsgTarget子类必须要实现
+        事件处理函数，该函数可以理解为纯虚函数，EventTarget子类必须要实现
         """
-        print('TestMsgTarget2 ', 'event_handle', event, event_content)
+        print('TestEventTarget2 ', 'event_handle', event, event_content)
 
     def exec(self):
         """
             publish_event
         """
-        event = 'TestMsgTarget2'
-        event_content = str(time.time())
+        event = 'TestEventTarget2'
+        event_content = (str(time.time())).encode()
         self.publish_event(event, event_content)
         print('publish_event:', event, event_content)
 
     def __del__(self):
         self.unsubscribe('TestThread1')
-        self.unsubscribe('TestMsgTarget1')
-        super(TestMsgTarget2, self).__del__()
+        self.unsubscribe('TestEventTarget1')
+        super(TestEventTarget2, self).__del__()
 
 
-class TestThread1(MThread, MsgTarget):
+class TestThread1(MThread, EventTarget):
     """
     test
     """
@@ -100,14 +100,14 @@ class TestThread1(MThread, MsgTarget):
         """
         子线程初始操作函数，该函数可以理解为纯虚函数，MThread子类必须要实现
         """
+        EventTarget.__init__(self, self)  # 该父类的构造必须是要再该线程执行中，最开始执行
         print('setup_thread...........', threading.current_thread(), self.thread_name)
-        self.test_target1 = TestMsgTarget1()
-        MsgTarget.__init__(self, self)
+        self.test_target1 = TestEventTarget1()
         self.subscribe('TestThread2', self)
 
     def event_handle(self, event, event_content):
         """
-        事件处理函数，该函数可以理解为纯虚函数，MsgTarget子类必须要实现
+        事件处理函数，该函数可以理解为纯虚函数，EventTarget子类必须要实现
         """
         print('TestThread1 ' 'event_handle', event, event_content)
 
@@ -116,7 +116,7 @@ class TestThread1(MThread, MsgTarget):
         super(TestThread1, self).__del__(self)
 
 
-class TestThread2(MThread, MsgTarget):
+class TestThread2(MThread, EventTarget):
     """
     test
     """
@@ -142,14 +142,16 @@ class TestThread2(MThread, MsgTarget):
         """
         子线程初始操作函数，该函数可以理解为纯虚函数，MThread子类必须要实现
         """
+        EventTarget.__init__(self, self)  # 该父类的构造必须是要再该线程执行中，最开始执行
+
         print('setup_thread...........', threading.current_thread(), self.thread_name)
-        self.test_target2 = TestMsgTarget2()
-        MsgTarget.__init__(self, self)
+        self.test_target2 = TestEventTarget2()
+
         self.subscribe('TestThread1', self)
 
     def event_handle(self, event, event_content):
         """
-        事件处理函数，该函数可以理解为纯虚函数，MsgTarget子类必须要实现
+        事件处理函数，该函数可以理解为纯虚函数，EventTarget子类必须要实现
         """
         print('TestThread2 ', 'event_handle', event, event_content)
 

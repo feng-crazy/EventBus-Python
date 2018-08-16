@@ -39,22 +39,23 @@ class EventBus(object):
         zmq.proxy(xpubsocket, xsubsocket)
 
     @classmethod
-    def register_client(cls, id, client):
+    def register_client(cls, client_id, client):
         """
-        添加一个消息客户端和其对应的id
-        :param id: 线程id
-        :param client:线程id的消息客户端
+        添加一个事件客户端和其对应的id
+        :param client_id: 线程id
+        :param client:线程id的事件客户端
         """
-        cls._thread_client_map[id] = client
+        print('register_client: client_id:%d' % client_id)
+        cls._thread_client_map[client_id] = client
 
     @classmethod
-    def find_client(cls, id):
+    def find_client(cls, client_id):
         """
         根据id找到线程的客户端
-        :param id:寻找线程的id
+        :param client_id:寻找线程的id
         """
-        if id in cls._thread_client_map:
-            return cls._thread_client_map[id]
+        if client_id in cls._thread_client_map:
+            return cls._thread_client_map[client_id]
 
     def __del__(self):
         super(EventBus, self).__del__()
