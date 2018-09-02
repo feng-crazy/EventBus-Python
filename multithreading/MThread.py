@@ -9,8 +9,8 @@ import asyncio
 import threading
 import traceback
 
-from eventbus.EventClient import EventClient
-from utility.Mlogging import MLog
+from EventClient import EventClient
+from Mlogging import MLog
 
 
 class MThread(object):

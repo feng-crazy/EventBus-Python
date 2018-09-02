@@ -8,9 +8,9 @@
 import threading
 import time
 
-from eventbus.EventBus import EventBus
-from eventbus.MThread import MThread
-from eventbus.EventTarget import EventTarget
+from EventBus import EventBus
+from MThread import MThread
+from EventTarget import EventTarget
 
 
 class TestEventTarget1(EventTarget):

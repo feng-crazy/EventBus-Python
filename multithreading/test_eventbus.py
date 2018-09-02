@@ -8,9 +8,10 @@
 import threading
 import time
 
-from eventbus.EventBus import EventBus
-from eventbus.MThread import MThread
-from eventbus.EventTarget import EventTarget
+from EventBus import EventBus
+from MThread import MThread
+from EventTarget import EventTarget
+from EventType import EventType
 
 
 class TestEventTarget1(EventTarget):
@@ -19,8 +20,8 @@ class TestEventTarget1(EventTarget):
     """
     def __init__(self):
         super(TestEventTarget1, self).__init__(self)
-        self.subscribe('TestThread2', self)
-        self.subscribe('TestEventTarget2', self)
+        self.subscribe(EventType.EVENT_TEST_THREAD_2, self)
+        self.subscribe(EventType.EVENT_TEST_TARGET_2, self)
         
     def event_handle(self, event, event_content):
         """
@@ -38,8 +39,8 @@ class TestEventTarget1(EventTarget):
         self.publish_event(event, event_content)
         
     def __del__(self):
-        self.unsubscribe('TestThread2', self)
-        self.unsubscribe('TestEventTarget2', self)
+        self.unsubscribe(EventType.EVENT_TEST_THREAD_2, self)
+        self.unsubscribe(EventType.EVENT_TEST_TARGET_2, self)
         super(TestEventTarget1, self).__del__()
 
 
@@ -50,8 +51,8 @@ class TestEventTarget2(EventTarget):
 
     def __init__(self):
         super(TestEventTarget2, self).__init__(self)
-        self.subscribe('TestThread1', self)
-        self.subscribe('TestEventTarget1', self)
+        self.subscribe(EventType.EVENT_TEST_THREAD_1, self)
+        self.subscribe(EventType.EVENT_TEST_TARGET_1, self)
 
     def event_handle(self, event, event_content):
         """
@@ -69,8 +70,8 @@ class TestEventTarget2(EventTarget):
         print('publish_event:', event, event_content)
 
     def __del__(self):
-        self.unsubscribe('TestThread1')
-        self.unsubscribe('TestEventTarget1')
+        self.unsubscribe(EventType.EVENT_TEST_THREAD_1, self)
+        self.unsubscribe(EventType.EVENT_TEST_TARGET_1, self)
         super(TestEventTarget2, self).__del__()
 
 
@@ -103,7 +104,7 @@ class TestThread1(MThread, EventTarget):
         EventTarget.__init__(self, self)  # 该父类的构造必须是要再该线程执行中，最开始执行
         print('setup_thread...........', threading.current_thread(), self.thread_name)
         self.test_target1 = TestEventTarget1()
-        self.subscribe('TestThread2', self)
+        self.subscribe(EventType.EVENT_TEST_THREAD_2, self)
 
     def event_handle(self, event, event_content):
         """
@@ -112,8 +113,8 @@ class TestThread1(MThread, EventTarget):
         print('TestThread1 ' 'event_handle', event, event_content)
 
     def __del__(self):
-        self.unsubscribe('TestThread2', self)
-        super(TestThread1, self).__del__(self)
+        self.unsubscribe(EventType.EVENT_TEST_THREAD_2, self)
+        super(TestThread1, self).__del__()
 
 
 class TestThread2(MThread, EventTarget):
@@ -157,7 +158,7 @@ class TestThread2(MThread, EventTarget):
 
     def __del__(self):
         self.unsubscribe('TestThread1', self)
-        super(TestThread2, self).__del__(self)
+        super(TestThread2, self).__del__()
 
 
 if __name__ == '__main__':

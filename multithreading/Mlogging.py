@@ -12,10 +12,6 @@ import sys
 
 
 LOG_FILE = 'M.log'
-# if operating_system_type == 'Windows':
-#     LOG_FILE = 'ctrller.log'
-# elif operating_system_type == 'Linux':
-#     LOG_FILE = '../../Data/ctrller.log'
 
 
 class MLog(object):
