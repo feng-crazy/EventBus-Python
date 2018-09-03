@@ -222,7 +222,7 @@ class TestSendEvent(MThread, EventTarget):
         """
         EventTarget.__init__(self, self)  # 该父类的构造必须是要再该线程执行中，最开始执行
         self.event_handle_sleep = 3  # 单位秒
-        self.thread_loop_sleep = 2  # 单位秒
+        self.thread_loop_sleep = 1  # 单位秒
         print('setup_thread...........', threading.current_thread(), self.thread_name)
 
     def __del__(self):
@@ -286,13 +286,14 @@ class MainThread(object):
         return
 
     async def system_initialize(self):
-        self.test_input_mthread = TestSendEvent('test send event thread')
-        self.test_input_mthread.start()
         self.thread_1 = TestThread1('thread_1')
         # self.thread_1.start()
 
         self.thread_2 = TestThread2('thread_1')
         # self.thread_2.start()
+
+        self.test_input_mthread = TestSendEvent('test send event thread')
+        self.test_input_mthread.start()
 
         # 初始化完成之后循环处理广播
         while True:

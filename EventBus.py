@@ -13,8 +13,8 @@ import zmq
 
 class EventBus(object):
     """EventBus 由xsub和xpub做总线"""
-    XSUB_ADDR_PORT = 'inproc://*:61001'
-    XPUB_ADDR_PORT = 'inproc://*:61002'
+    XSUB_ADDR_PORT = 'inproc://XsubEndpoint'
+    XPUB_ADDR_PORT = 'inproc://XpubEndpoint'
     CONTEXT = zmq.Context()
     COMMON_SUB_STR = 'common sub str'
 
