@@ -289,7 +289,7 @@ class MainThread(object):
         self.thread_1 = TestThread1('thread_1')
         # self.thread_1.start()
 
-        self.thread_2 = TestThread2('thread_1')
+        self.thread_2 = TestThread2('thread_2')
         # self.thread_2.start()
 
         self.test_input_mthread = TestSendEvent('test send event thread')
